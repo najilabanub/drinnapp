@@ -1,24 +1,49 @@
 from django.contrib.auth import authenticate
 from rest_framework import serializers
+from .models import User,Admin,Doctor,Patient,PatientAssistant,RMA
 from rest_framework_simplejwt.tokens import RefreshToken
 
 
-class LoginSeialzer(serializers.Serializer):
-    username = serializers.CharField()
-    password  = serializers.CharField(write_only = True)
 
-    def validate(self,data):
-        username = data.get("username")
-        password = data.get("password")
+class UserSerializer(serializers.ModelSerializer):
+    class Meta :
+        model =  User
+        fields = ['id','email','username','usertype']
+
+class AdminSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+
+    class Meta:
+        model = Admin
+        fields = ['id','user','permission']
+
+class DoctorSerializer(serializers.ModelSerializer):
+
+    user = UserSerializer
+    class Meta:
+        model = Doctor
+        field = ['id','user','specialization','experience_years']
 
 
-        user = authenticate(username=username, password=password)
-        if user is None:
-            raise serializers.ValidationError("Invalid username or password.")
-         
+class PatientSerializer(serializers.ModelSerializer):
+     user = UserSerializer
 
-        refresh = RefreshToken.for_user(user)
-        return{
-            "refresh" :str(refresh),
-            "access" : str(refresh.access_token),
-        }
+     class Meta:
+         model = Patient
+         fields = ['id','user','date_of_birth','medical_history']
+
+
+class RMASerializer(serializers.ModelSerializer):
+    user =UserSerializer
+
+
+    class Meta:
+        model = RMA
+        fields = ['id','user','assigned_doctor']
+
+class PatientAssistantSerializer(serializers.ModelSerializer):
+    user = UserSerializer
+
+    class Meta:
+        model = PatientAssistant
+        fields = ['id','user','patient']
