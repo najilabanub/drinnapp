@@ -1,8 +1,7 @@
 from django.urls import path,include
 from rest_framework.routers import DefaultRouter
 from .views import UserViewSet,AdminViewSet,DoctorViewSet,PatientAssistantViewSet,PatientViewSet,RMAViewSet
-
-
+from . login_api_view import LoginView
 
 
 router = DefaultRouter()
@@ -18,5 +17,6 @@ router.register(r'rma',RMAViewSet)
 urlpatterns = [
 
     path('api/',include(router.urls)),
+    path('api/login/',LoginView.as_view(),name = 'login'),
     
 ]
