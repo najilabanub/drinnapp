@@ -7,5 +7,5 @@ class User(AbstractUser):
                  ('rma','RMA'),
                  ('patient_assistant','PatientAssistant'),
                  ('patient','Patient'))
-    user
+
     
